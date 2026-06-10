@@ -1,0 +1,583 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Netflix – Mi cuenta</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&display=swap');
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  :root {
+    --red: #E50914;
+    --dark: #141414;
+    --card: #1F1F1F;
+    --border: #333;
+    --text: #e5e5e5;
+    --muted: #757575;
+    --btn-bg: #2a2a2a;
+  }
+
+  body {
+    background: var(--dark);
+    color: var(--text);
+    font-family: 'Inter', sans-serif;
+    font-size: 15px;
+    min-height: 100vh;
+  }
+
+  header {
+    background: #000;
+    padding: 18px 5%;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 1px solid var(--border);
+    position: sticky;
+    top: 0;
+    z-index: 10;
+  }
+
+  .logo {
+    font-size: 26px;
+    font-weight: 700;
+    color: var(--red);
+    letter-spacing: -1px;
+  }
+
+  header nav a {
+    color: var(--muted);
+    text-decoration: none;
+    margin-left: 18px;
+    font-size: 13px;
+  }
+
+  .page { max-width: 860px; margin: 0 auto; padding: 40px 20px 80px; }
+
+  .breadcrumb {
+    font-size: 12px;
+    color: var(--muted);
+    margin-bottom: 28px;
+    letter-spacing: 0.04em;
+  }
+
+  .breadcrumb span { color: #aaa; }
+
+  h1 {
+    font-size: 22px;
+    font-weight: 500;
+    margin-bottom: 6px;
+  }
+
+  .subtitle {
+    font-size: 13px;
+    color: var(--muted);
+    margin-bottom: 36px;
+    line-height: 1.5;
+  }
+
+  .plan-card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    padding: 20px 24px;
+    margin-bottom: 16px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  .plan-info h3 { font-size: 15px; font-weight: 500; margin-bottom: 4px; }
+  .plan-info p { font-size: 12px; color: var(--muted); }
+
+  .plan-price { font-size: 20px; font-weight: 600; color: #fff; }
+  .plan-price small { font-size: 12px; color: var(--muted); display: block; text-align: right; }
+
+  .badge {
+    display: inline-block;
+    background: var(--red);
+    color: #fff;
+    font-size: 10px;
+    font-weight: 600;
+    padding: 3px 8px;
+    border-radius: 3px;
+    margin-left: 10px;
+    vertical-align: middle;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+  }
+
+  .benefits-box {
+    background: #1a1a1a;
+    border: 1px solid #2e2e2e;
+    border-left: 3px solid var(--red);
+    border-radius: 6px;
+    padding: 18px 22px;
+    margin-bottom: 28px;
+  }
+
+  .benefits-box h4 {
+    font-size: 13px;
+    font-weight: 600;
+    color: #fff;
+    margin-bottom: 12px;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+  }
+
+  .benefit-row {
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    margin-bottom: 10px;
+    font-size: 13px;
+    color: #ccc;
+    line-height: 1.4;
+  }
+
+  .benefit-row .icon { color: var(--red); font-size: 16px; margin-top: 1px; flex-shrink: 0; }
+
+  /* DARK PATTERN: action buttons confusingly styled */
+  .actions {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    margin-top: 36px;
+  }
+
+  /* Keep subscription = red, prominent */
+  .btn-keep {
+    background: var(--red);
+    color: #fff;
+    border: none;
+    border-radius: 4px;
+    padding: 14px 24px;
+    font-size: 15px;
+    font-weight: 600;
+    cursor: pointer;
+    width: 100%;
+    transition: background 0.15s;
+  }
+  .btn-keep:hover { background: #c40812; }
+
+  /* Cancel = tiny, muted, almost invisible */
+  .btn-cancel-dp {
+    background: transparent;
+    color: var(--muted);
+    border: none;
+    font-size: 11px;
+    cursor: pointer;
+    text-decoration: underline;
+    text-decoration-style: dotted;
+    text-underline-offset: 3px;
+    padding: 4px 0;
+    text-align: center;
+    letter-spacing: 0.02em;
+  }
+
+  .btn-cancel-dp:hover { color: #999; }
+
+  .fear-text {
+    font-size: 12px;
+    color: #5a5a5a;
+    text-align: center;
+    margin-top: 8px;
+    line-height: 1.6;
+  }
+
+  /* STEP 2: Retention screen */
+  .screen { display: none; }
+  .screen.active { display: block; }
+
+  .retention-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 14px;
+    margin-bottom: 28px;
+  }
+
+  .retention-card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    padding: 18px 16px;
+    cursor: pointer;
+    transition: border-color 0.15s;
+    position: relative;
+  }
+
+  .retention-card:hover { border-color: var(--red); }
+  .retention-card.selected { border-color: var(--red); background: #2a1010; }
+
+  .retention-card h4 { font-size: 14px; font-weight: 500; margin-bottom: 6px; }
+  .retention-card p { font-size: 12px; color: var(--muted); line-height: 1.4; }
+
+  .retention-card .rec-badge {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    background: #2c1f00;
+    color: #f0a500;
+    font-size: 10px;
+    font-weight: 700;
+    padding: 2px 7px;
+    border-radius: 3px;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+  }
+
+  /* STEP 3: Confirm survey (unnecessary friction) */
+  .survey-label {
+    font-size: 13px;
+    color: var(--muted);
+    margin-bottom: 8px;
+    display: block;
+  }
+
+  .survey-options { margin-bottom: 24px; }
+
+  .survey-option {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 12px 16px;
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    margin-bottom: 8px;
+    cursor: pointer;
+    font-size: 13px;
+    color: var(--text);
+    transition: border-color 0.12s;
+  }
+
+  .survey-option:hover { border-color: #555; }
+  .survey-option.selected { border-color: var(--red); }
+
+  .survey-option input[type="radio"] { accent-color: var(--red); }
+
+  .confirm-warning {
+    background: #1a0f0f;
+    border: 1px solid #4a1a1a;
+    border-radius: 6px;
+    padding: 16px 20px;
+    font-size: 12px;
+    color: #c97878;
+    line-height: 1.7;
+    margin-bottom: 24px;
+  }
+
+  .confirm-warning strong { color: #e08080; }
+
+  /* STEP 4: Final confirm – confusing double negative */
+  .double-neg {
+    background: #111;
+    border: 1px solid #2a2a2a;
+    border-radius: 6px;
+    padding: 24px;
+    text-align: center;
+    margin-bottom: 24px;
+  }
+
+  .double-neg h3 { font-size: 16px; margin-bottom: 10px; color: #aaa; font-weight: 400; }
+  .double-neg p { font-size: 12px; color: #555; margin-bottom: 20px; line-height: 1.6; }
+
+  .double-neg-btns { display: flex; gap: 12px; justify-content: center; }
+
+  /* Dark pattern: "No cancelar" looks primary */
+  .btn-no-cancel {
+    background: var(--red);
+    color: #fff;
+    border: none;
+    padding: 12px 24px;
+    border-radius: 4px;
+    font-size: 13px;
+    font-weight: 600;
+    cursor: pointer;
+  }
+
+  /* "Sí, cancelar" looks secondary and confusing */
+  .btn-yes-cancel {
+    background: transparent;
+    color: #555;
+    border: 1px solid #333;
+    padding: 12px 24px;
+    border-radius: 4px;
+    font-size: 11px;
+    cursor: pointer;
+  }
+
+  .btn-yes-cancel:hover { color: #888; }
+
+  /* STEP 5: Success / done */
+  .done-box {
+    text-align: center;
+    padding: 60px 20px;
+  }
+
+  .done-box .done-icon {
+    font-size: 48px;
+    margin-bottom: 20px;
+    display: block;
+  }
+
+  .done-box h2 { font-size: 20px; margin-bottom: 10px; color: #aaa; font-weight: 400; }
+  .done-box p { font-size: 13px; color: var(--muted); line-height: 1.7; max-width: 400px; margin: 0 auto; }
+
+  .step-indicator {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    margin-bottom: 32px;
+    font-size: 11px;
+    color: #444;
+  }
+
+  .step-dot {
+    width: 7px;
+    height: 7px;
+    border-radius: 50%;
+    background: #333;
+  }
+
+  .step-dot.active { background: var(--red); }
+  .step-dot.done { background: #555; }
+
+  .step-label { color: #555; font-size: 11px; letter-spacing: 0.06em; text-transform: uppercase; }
+
+  /* Fake urgency timer */
+  .urgency-bar {
+    background: #1a0e00;
+    border: 1px solid #3a2500;
+    border-radius: 4px;
+    padding: 10px 16px;
+    font-size: 12px;
+    color: #f0a500;
+    text-align: center;
+    margin-bottom: 20px;
+    letter-spacing: 0.03em;
+  }
+
+  /* Dark pattern: confusing checkbox */
+  .confusing-check {
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    font-size: 11px;
+    color: #3f3f3f;
+    line-height: 1.5;
+    margin-bottom: 20px;
+  }
+
+  .confusing-check input { margin-top: 2px; accent-color: var(--red); }
+
+  hr { border: none; border-top: 1px solid var(--border); margin: 28px 0; }
+
+  @media (max-width: 600px) {
+    .retention-grid { grid-template-columns: 1fr; }
+    .double-neg-btns { flex-direction: column; }
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="logo">Netflix</div>
+  <nav>
+    <a href="#">Inicio</a>
+    <a href="#">Mi cuenta</a>
+    <a href="#">Ayuda</a>
+  </nav>
+</header>
+
+<div class="page">
+
+  <!-- SCREEN 1: Account overview -->
+  <div class="screen active" id="screen-1">
+    <div class="breadcrumb">Mi cuenta &rsaquo; <span>Suscripción</span></div>
+
+    <h1>Tu suscripción activa</h1>
+    <p class="subtitle">Administra tu plan y preferencias de facturación. Tu próximo cobro es el <strong style="color:#aaa">15 de julio de 2026</strong>.</p>
+
+    <div class="plan-card">
+      <div class="plan-info">
+        <h3>Plan Ultra Premium 4K <span class="badge">Activo</span></h3>
+        <p>4 pantallas simultáneas · 4K UHD + HDR · Descargas ilimitadas · Audio espacial</p>
+      </div>
+      <div class="plan-price">
+        $299
+        <small>/ mes</small>
+      </div>
+    </div>
+
+    <div class="benefits-box">
+      <h4>Lo que incluye tu plan</h4>
+      <div class="benefit-row"><span class="icon">◆</span><span>Acceso ilimitado a más de <strong>12,000 títulos</strong> en 4K HDR sin anuncios</span></div>
+      <div class="benefit-row"><span class="icon">◆</span><span>Descarga hasta <strong>100 títulos</strong> para ver sin conexión en cualquier dispositivo</span></div>
+      <div class="benefit-row"><span class="icon">◆</span><span>Hasta <strong>4 perfiles</strong> simultáneos con recomendaciones personalizadas por IA</span></div>
+      <div class="benefit-row"><span class="icon">◆</span><span>Acceso anticipado a <strong>estrenos exclusivos</strong> y contenido original Netflix</span></div>
+      <div class="benefit-row"><span class="icon">◆</span><span>Soporte prioritario <strong>24/7</strong> con tiempo de respuesta garantizado &lt; 2 horas</span></div>
+    </div>
+
+    <div class="actions">
+      <button class="btn-keep" onclick="goTo(2)">Continuar con mi suscripción</button>
+      <!-- Dark pattern: cancel hidden as tiny dotted underline -->
+      <button class="btn-cancel-dp" onclick="goTo(2)">gestionar opciones de cancelación</button>
+      <p class="fear-text">Si cancelas perderás acceso inmediato a todo tu contenido guardado, historial de visualización, descargas y listas personalizadas acumuladas durante tu suscripción.</p>
+    </div>
+  </div>
+
+  <!-- SCREEN 2: Retention offers (unnecessary step) -->
+  <div class="screen" id="screen-2">
+    <div class="step-indicator">
+      <div class="step-dot done"></div>
+      <div class="step-dot active"></div>
+      <div class="step-dot"></div>
+      <div class="step-dot"></div>
+      <span class="step-label" style="margin-left:6px">Paso 2 de 4</span>
+    </div>
+
+    <h1>Antes de continuar…</h1>
+    <p class="subtitle">Hemos preparado alternativas para que no pierdas tu acceso. Selecciona una opción para ver los detalles.</p>
+
+    <div class="urgency-bar">
+      ⏱ Oferta especial disponible por tiempo limitado · Válida solo para tu cuenta
+    </div>
+
+    <div class="retention-grid">
+      <div class="retention-card" onclick="selectCard(this)">
+        <div class="rec-badge">Recomendado</div>
+        <h4>Pausar suscripción</h4>
+        <p>Pausa por 1, 2 o 3 meses sin perder tu historial ni perfil. Reactiva cuando quieras.</p>
+      </div>
+      <div class="retention-card" onclick="selectCard(this)">
+        <h4>Cambiar a plan Básico</h4>
+        <p>Reduce a $99/mes. Mantén acceso a 8,000 títulos en HD con 2 pantallas.</p>
+      </div>
+      <div class="retention-card" onclick="selectCard(this)">
+        <h4>Descuento por fidelidad</h4>
+        <p>Obtén 40% de descuento durante 3 meses por ser cliente frecuente. Oferta única.</p>
+      </div>
+      <div class="retention-card" onclick="selectCard(this)">
+        <h4>Compartir con familia</h4>
+        <p>Agrega hasta 3 integrantes y divide el costo. Desde $75/mes por persona.</p>
+      </div>
+    </div>
+
+    <div class="actions">
+      <button class="btn-keep" onclick="goTo(1)">Aprovechar esta oferta</button>
+      <button class="btn-cancel-dp" onclick="goTo(3)">no me interesa ninguna opción</button>
+    </div>
+  </div>
+
+  <!-- SCREEN 3: Survey (more friction) -->
+  <div class="screen" id="screen-3">
+    <div class="step-indicator">
+      <div class="step-dot done"></div>
+      <div class="step-dot done"></div>
+      <div class="step-dot active"></div>
+      <div class="step-dot"></div>
+      <span class="step-label" style="margin-left:6px">Paso 3 de 4</span>
+    </div>
+
+    <h1>Cuéntanos por qué</h1>
+    <p class="subtitle">Tu opinión es obligatoria para procesar la solicitud. Selecciona el motivo principal.</p>
+
+    <span class="survey-label">¿Por qué deseas cancelar? *</span>
+    <div class="survey-options">
+      <label class="survey-option" onclick="selectOption(this)">
+        <input type="radio" name="reason" value="precio"> El precio es muy alto
+      </label>
+      <label class="survey-option" onclick="selectOption(this)">
+        <input type="radio" name="reason" value="contenido"> No encuentro contenido que me interese
+      </label>
+      <label class="survey-option" onclick="selectOption(this)">
+        <input type="radio" name="reason" value="uso"> No lo uso con suficiente frecuencia
+      </label>
+      <label class="survey-option" onclick="selectOption(this)">
+        <input type="radio" name="reason" value="otro"> Otro servicio me ofrece más valor
+      </label>
+      <label class="survey-option" onclick="selectOption(this)">
+        <input type="radio" name="reason" value="tecnico"> Problemas técnicos frecuentes
+      </label>
+    </div>
+
+    <div class="confirm-warning">
+      <strong>Recuerda:</strong> al cancelar perderás inmediatamente acceso a todo el contenido premium, descargas guardadas, tu lista personalizada de 47 títulos, y el historial de visualización de los últimos 18 meses. Esta acción <strong>no se puede deshacer</strong>.
+    </div>
+
+    <div class="confusing-check">
+      <input type="checkbox" id="chk1">
+      <label for="chk1">No deseo no recibir comunicaciones sobre beneficios exclusivos para ex-suscriptores ni ofertas de reactivación especiales en el futuro.</label>
+    </div>
+
+    <div class="actions">
+      <button class="btn-keep" onclick="goTo(1)">Conservar mi suscripción</button>
+      <button class="btn-cancel-dp" onclick="goTo(4)">continuar con la cancelación de todos modos</button>
+    </div>
+  </div>
+
+  <!-- SCREEN 4: Double negative final confirm -->
+  <div class="screen" id="screen-4">
+    <div class="step-indicator">
+      <div class="step-dot done"></div>
+      <div class="step-dot done"></div>
+      <div class="step-dot done"></div>
+      <div class="step-dot active"></div>
+      <span class="step-label" style="margin-left:6px">Paso 4 de 4</span>
+    </div>
+
+    <h1>Confirmación final requerida</h1>
+    <p class="subtitle">Esta acción es irreversible. Lee con atención antes de continuar.</p>
+
+    <div class="double-neg">
+      <h3>¿Confirmas que no deseas mantener activa tu suscripción?</h3>
+      <p>Al seleccionar "No cancelar" permanecerás suscrito y podrás seguir disfrutando de todos los beneficios. Si seleccionas la otra opción, la cancelación será procesada de forma inmediata y permanente.</p>
+
+      <div class="double-neg-btns">
+        <!-- Dark pattern: visually primary button = NO cancel -->
+        <button class="btn-no-cancel" onclick="goTo(1)">No cancelar</button>
+        <!-- Actual cancel = muted, small -->
+        <button class="btn-yes-cancel" onclick="goTo(5)">Sí, cancelar definitivamente</button>
+      </div>
+    </div>
+
+    <p style="font-size:11px; color:#333; text-align:center; line-height:1.6;">
+      Al cancelar aceptas los <a href="#" style="color:#444;">términos de cancelación</a> y la <a href="#" style="color:#444;">política de reembolsos</a> vigentes. Los cargos ya realizados no serán devueltos.
+    </p>
+  </div>
+
+  <!-- SCREEN 5: Done -->
+  <div class="screen" id="screen-5">
+    <div class="done-box">
+      <span class="done-icon">📭</span>
+      <h2>Suscripción cancelada</h2>
+      <p>Tu suscripción ha sido cancelada. Tendrás acceso hasta el <strong style="color:#aaa">15 de julio de 2026</strong>. Lamentamos que te vayas.</p>
+      <br>
+      <button class="btn-keep" onclick="goTo(1)" style="max-width:280px; margin: 0 auto; display:block;">Reactivar suscripción</button>
+    </div>
+  </div>
+
+</div>
+
+<script>
+  function goTo(n) {
+    document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+    document.getElementById('screen-' + n).classList.add('active');
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }
+
+  function selectCard(el) {
+    document.querySelectorAll('.retention-card').forEach(c => c.classList.remove('selected'));
+    el.classList.add('selected');
+  }
+
+  function selectOption(el) {
+    document.querySelectorAll('.survey-option').forEach(o => o.classList.remove('selected'));
+    el.classList.add('selected');
+  }
+</script>
+
+</body>
+</html>

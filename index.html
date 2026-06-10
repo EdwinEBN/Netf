@@ -1,0 +1,742 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>StreamMax – Laboratorio UX</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  :root {
+    --red: #E50914;
+    --red2: #B20710;
+    --dark: #141414;
+    --darker: #0a0a0a;
+    --card: #1c1c1c;
+    --border: #2a2a2a;
+    --text: #e5e5e5;
+    --muted: #888;
+  }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    background: var(--darker);
+    color: var(--text);
+    font-family: 'Inter', sans-serif;
+    min-height: 100vh;
+    overflow-x: hidden;
+  }
+
+  /* ── HEADER ── */
+  header {
+    position: fixed;
+    top: 0; left: 0; right: 0;
+    z-index: 100;
+    padding: 18px 6%;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: linear-gradient(to bottom, rgba(0,0,0,0.92) 0%, transparent 100%);
+    transition: background 0.3s;
+  }
+
+  header.scrolled { background: rgba(0,0,0,0.97); }
+
+  .logo {
+    font-size: 28px;
+    font-weight: 700;
+    color: var(--red);
+    letter-spacing: -1.5px;
+    user-select: none;
+  }
+
+  .logo sup {
+    font-size: 10px;
+    font-weight: 600;
+    color: #fff;
+    background: var(--red);
+    padding: 2px 5px;
+    border-radius: 3px;
+    letter-spacing: 0.05em;
+    vertical-align: super;
+    margin-left: 2px;
+  }
+
+  header nav {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+
+  header nav a {
+    color: var(--muted);
+    text-decoration: none;
+    font-size: 13px;
+    padding: 6px 10px;
+    border-radius: 4px;
+    transition: color 0.15s;
+  }
+
+  header nav a:hover { color: #fff; }
+
+  /* ── HERO ── */
+  .hero {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    padding: 120px 6% 80px;
+    position: relative;
+    overflow: hidden;
+  }
+
+  /* Cinematic background grid */
+  .hero-bg {
+    position: absolute;
+    inset: 0;
+    z-index: 0;
+    overflow: hidden;
+  }
+
+  .hero-bg-grid {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    grid-template-rows: repeat(3, 1fr);
+    height: 100%;
+    opacity: 0.08;
+    filter: blur(1px);
+  }
+
+  .hero-bg-cell {
+    background: var(--card);
+    border: 1px solid #333;
+  }
+
+  .hero-bg-cell:nth-child(odd) { background: #1a1a1a; }
+
+  .hero-bg::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(ellipse 80% 70% at 50% 50%, transparent 20%, var(--darker) 80%);
+  }
+
+  /* Animated red accent line */
+  .hero-line {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 3px;
+    background: linear-gradient(90deg, transparent, var(--red), transparent);
+    animation: scan 3s ease-in-out infinite;
+  }
+
+  @keyframes scan {
+    0%, 100% { opacity: 0.3; transform: scaleX(0.6); }
+    50% { opacity: 1; transform: scaleX(1); }
+  }
+
+  .hero-content { position: relative; z-index: 1; max-width: 720px; }
+
+  .hero-eyebrow {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    background: rgba(229, 9, 20, 0.12);
+    border: 1px solid rgba(229, 9, 20, 0.3);
+    border-radius: 20px;
+    padding: 6px 16px;
+    font-size: 11px;
+    font-weight: 600;
+    color: #ff6b6b;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    margin-bottom: 28px;
+  }
+
+  .hero-eyebrow .dot {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: var(--red);
+    animation: pulse 1.5s ease-in-out infinite;
+  }
+
+  @keyframes pulse {
+    0%, 100% { opacity: 1; transform: scale(1); }
+    50% { opacity: 0.5; transform: scale(0.7); }
+  }
+
+  .hero h1 {
+    font-size: clamp(32px, 5vw, 58px);
+    font-weight: 700;
+    line-height: 1.1;
+    margin-bottom: 20px;
+    color: #fff;
+    letter-spacing: -1.5px;
+  }
+
+  .hero h1 em {
+    font-style: normal;
+    color: var(--red);
+  }
+
+  .hero p {
+    font-size: 16px;
+    color: var(--muted);
+    line-height: 1.7;
+    max-width: 520px;
+    margin: 0 auto 48px;
+  }
+
+  .hero-cta {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    background: var(--red);
+    color: #fff;
+    font-size: 14px;
+    font-weight: 600;
+    padding: 14px 28px;
+    border-radius: 6px;
+    text-decoration: none;
+    transition: background 0.15s, transform 0.1s;
+    letter-spacing: 0.02em;
+  }
+
+  .hero-cta:hover { background: var(--red2); transform: translateY(-1px); }
+  .hero-cta .arrow { font-size: 18px; transition: transform 0.15s; }
+  .hero-cta:hover .arrow { transform: translateY(2px); }
+
+  /* ── SECTION ── */
+  .section {
+    padding: 80px 6%;
+    max-width: 1100px;
+    margin: 0 auto;
+  }
+
+  .section-header {
+    display: flex;
+    align-items: baseline;
+    gap: 16px;
+    margin-bottom: 36px;
+  }
+
+  .section-label {
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--red);
+  }
+
+  .section-title {
+    font-size: 22px;
+    font-weight: 600;
+    color: #fff;
+  }
+
+  .section-divider {
+    flex: 1;
+    height: 1px;
+    background: var(--border);
+    margin-left: 8px;
+  }
+
+  /* ── CARDS ── */
+  .cards {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 24px;
+  }
+
+  .card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    overflow: hidden;
+    text-decoration: none;
+    color: var(--text);
+    display: flex;
+    flex-direction: column;
+    transition: border-color 0.2s, transform 0.2s;
+    position: relative;
+  }
+
+  .card:hover { border-color: #555; transform: translateY(-3px); }
+
+  /* Card thumbnail area */
+  .card-thumb {
+    height: 200px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .card-thumb-hard {
+    background: #0e0e0e;
+  }
+
+  .card-thumb-easy {
+    background: #0a130f;
+  }
+
+  /* Mock UI preview inside thumbnail */
+  .mock-preview {
+    width: 80%;
+    padding: 14px;
+    border-radius: 8px;
+    border: 1px solid #333;
+    font-size: 10px;
+    transform: perspective(600px) rotateX(4deg);
+    transition: transform 0.3s;
+  }
+
+  .card:hover .mock-preview { transform: perspective(600px) rotateX(0deg) scale(1.02); }
+
+  .mock-preview.hard { background: #141414; border-color: #2a2a2a; }
+  .mock-preview.easy { background: #0f1f15; border-color: #1a3a25; }
+
+  .mock-bar {
+    height: 6px;
+    border-radius: 3px;
+    margin-bottom: 6px;
+  }
+
+  .mock-bar.full { width: 100%; }
+  .mock-bar.med { width: 65%; }
+  .mock-bar.sm { width: 40%; }
+
+  .mock-bar.hard-red { background: var(--red); }
+  .mock-bar.hard-gray { background: #2a2a2a; }
+  .mock-bar.hard-dim { background: #1e1e1e; }
+
+  .mock-bar.easy-green { background: #1db954; }
+  .mock-bar.easy-dark { background: #1a3a25; }
+  .mock-bar.easy-dim { background: #112218; }
+
+  .mock-btn {
+    height: 22px;
+    border-radius: 4px;
+    margin-top: 8px;
+  }
+
+  .mock-btn.hard-main { width: 100%; background: var(--red); }
+  .mock-btn.hard-ghost { width: 50%; background: transparent; border: 1px solid #1e1e1e; margin-top: 5px; }
+  .mock-btn.easy-cancel { width: 100%; background: transparent; border: 1px solid #2a4a35; }
+  .mock-btn.easy-main { width: 100%; background: var(--red); margin-top: 5px; }
+
+  .mock-steps {
+    display: flex;
+    gap: 4px;
+    margin-bottom: 8px;
+  }
+
+  .mock-step {
+    height: 4px;
+    flex: 1;
+    border-radius: 2px;
+  }
+
+  .card-thumb-overlay {
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(to bottom, transparent 40%, var(--card) 100%);
+  }
+
+  /* Card badge */
+  .card-badge {
+    position: absolute;
+    top: 14px;
+    right: 14px;
+    font-size: 10px;
+    font-weight: 700;
+    padding: 4px 10px;
+    border-radius: 4px;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+  }
+
+  .badge-hard {
+    background: rgba(229, 9, 20, 0.2);
+    border: 1px solid rgba(229, 9, 20, 0.4);
+    color: #ff6b6b;
+  }
+
+  .badge-easy {
+    background: rgba(29, 185, 84, 0.15);
+    border: 1px solid rgba(29, 185, 84, 0.3);
+    color: #5dde8a;
+  }
+
+  /* Card body */
+  .card-body { padding: 22px 22px 24px; flex: 1; display: flex; flex-direction: column; }
+
+  .card-number {
+    font-size: 11px;
+    font-weight: 600;
+    color: var(--muted);
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    margin-bottom: 8px;
+  }
+
+  .card-title {
+    font-size: 19px;
+    font-weight: 600;
+    color: #fff;
+    margin-bottom: 10px;
+    line-height: 1.2;
+  }
+
+  .card-desc {
+    font-size: 13px;
+    color: var(--muted);
+    line-height: 1.6;
+    margin-bottom: 20px;
+    flex: 1;
+  }
+
+  .card-tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    margin-bottom: 20px;
+  }
+
+  .tag {
+    font-size: 11px;
+    padding: 4px 10px;
+    border-radius: 4px;
+    font-weight: 500;
+    letter-spacing: 0.04em;
+  }
+
+  .tag-red { background: rgba(229,9,20,0.12); color: #f08080; border: 1px solid rgba(229,9,20,0.2); }
+  .tag-green { background: rgba(29,185,84,0.1); color: #5dde8a; border: 1px solid rgba(29,185,84,0.2); }
+  .tag-gray { background: #222; color: #888; border: 1px solid #2e2e2e; }
+
+  .card-action {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    border-top: 1px solid var(--border);
+    padding-top: 16px;
+    font-size: 13px;
+    font-weight: 500;
+    color: #bbb;
+    transition: color 0.15s;
+  }
+
+  .card:hover .card-action { color: #fff; }
+
+  .card-action .arrow-r {
+    font-size: 18px;
+    transition: transform 0.15s;
+  }
+
+  .card:hover .card-action .arrow-r { transform: translateX(4px); }
+
+  /* ── COMPARISON TABLE ── */
+  .comparison {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    overflow: hidden;
+    margin-top: 60px;
+  }
+
+  .comparison-header {
+    padding: 20px 24px;
+    border-bottom: 1px solid var(--border);
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 16px;
+    font-size: 12px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: var(--muted);
+  }
+
+  .comparison-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 16px;
+    padding: 16px 24px;
+    border-bottom: 1px solid #1e1e1e;
+    font-size: 13px;
+    align-items: center;
+    transition: background 0.12s;
+  }
+
+  .comparison-row:last-child { border-bottom: none; }
+  .comparison-row:hover { background: #1a1a1a; }
+
+  .comparison-row .feature { color: var(--muted); }
+  .comparison-row .val-hard { color: #f08080; }
+  .comparison-row .val-easy { color: #5dde8a; }
+
+  /* ── CONCEPT STRIP ── */
+  .concept-strip {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 16px;
+    margin-top: 60px;
+  }
+
+  .concept-card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 20px 18px;
+  }
+
+  .concept-icon {
+    font-size: 22px;
+    margin-bottom: 12px;
+    display: block;
+  }
+
+  .concept-card h4 { font-size: 14px; font-weight: 600; color: #ccc; margin-bottom: 7px; }
+  .concept-card p { font-size: 12px; color: var(--muted); line-height: 1.6; }
+
+  /* ── FOOTER ── */
+  footer {
+    border-top: 1px solid var(--border);
+    padding: 32px 6%;
+    text-align: center;
+    font-size: 12px;
+    color: #3a3a3a;
+    background: var(--darker);
+  }
+
+  footer span { color: #555; }
+
+  /* ── RESPONSIVE ── */
+  @media (max-width: 700px) {
+    .cards { grid-template-columns: 1fr; }
+    .concept-strip { grid-template-columns: 1fr; }
+    .comparison-header,
+    .comparison-row { grid-template-columns: 1fr 1fr; }
+    .comparison-header div:first-child,
+    .comparison-row .feature { display: none; }
+    header nav { display: none; }
+  }
+</style>
+</head>
+<body>
+
+<header id="hdr">
+  <div class="logo">STREAMMAX <sup>UX</sup></div>
+  <nav>
+    <a href="#casos">Casos</a>
+    <a href="#comparacion">Comparativa</a>
+    <a href="#conceptos">Conceptos</a>
+  </nav>
+</header>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-bg">
+    <div class="hero-bg-grid">
+      <div class="hero-bg-cell"></div><div class="hero-bg-cell"></div><div class="hero-bg-cell"></div><div class="hero-bg-cell"></div><div class="hero-bg-cell"></div>
+      <div class="hero-bg-cell"></div><div class="hero-bg-cell"></div><div class="hero-bg-cell"></div><div class="hero-bg-cell"></div><div class="hero-bg-cell"></div>
+      <div class="hero-bg-cell"></div><div class="hero-bg-cell"></div><div class="hero-bg-cell"></div><div class="hero-bg-cell"></div><div class="hero-bg-cell"></div>
+    </div>
+  </div>
+  <div class="hero-line"></div>
+
+  <div class="hero-content">
+    <div class="hero-eyebrow">
+      <div class="dot"></div>
+      Laboratorio de Diseño UX
+    </div>
+    <h1>Dos formas de<br>cancelar lo <em>mismo</em></h1>
+    <p>Un experimento visual sobre cómo el diseño puede facilitar o sabotear la experiencia del usuario. Mismo producto, dos intenciones completamente opuestas.</p>
+    <a href="#casos" class="hero-cta">
+      Ver los casos
+      <span class="arrow">↓</span>
+    </a>
+  </div>
+</section>
+
+<!-- CASOS -->
+<section class="section" id="casos">
+  <div class="section-header">
+    <span class="section-label">Casos de estudio</span>
+    <h2 class="section-title">Elige una interfaz</h2>
+    <div class="section-divider"></div>
+  </div>
+
+  <div class="cards">
+
+    <!-- CARD: DIFÍCIL -->
+    <a class="card" href="cancelacion-dificil.html">
+      <div class="card-thumb card-thumb-hard">
+        <div class="mock-preview hard">
+          <div class="mock-steps">
+            <div class="mock-step" style="background:#e50914;"></div>
+            <div class="mock-step" style="background:#2a2a2a;"></div>
+            <div class="mock-step" style="background:#2a2a2a;"></div>
+            <div class="mock-step" style="background:#2a2a2a;"></div>
+          </div>
+          <div class="mock-bar full hard-gray"></div>
+          <div class="mock-bar med hard-gray" style="margin-top:5px;"></div>
+          <div class="mock-bar full hard-dim" style="height:30px; margin-top:8px; border-radius:4px;"></div>
+          <div class="mock-btn hard-main"></div>
+          <div style="display:flex; justify-content:center; margin-top:6px;">
+            <div style="width:45%; height:6px; background:#1a1a1a; border-radius:3px;"></div>
+          </div>
+        </div>
+        <div class="card-badge badge-hard">Dark pattern</div>
+        <div class="card-thumb-overlay"></div>
+      </div>
+      <div class="card-body">
+        <div class="card-number">Caso 01</div>
+        <div class="card-title">Cancelación difícil</div>
+        <div class="card-desc">Flujo de 4 pasos diseñado con dark patterns: botones engañosos, dobles negativos, encuestas obligatorias y fricciones artificiales para disuadir al usuario de cancelar.</div>
+        <div class="card-tags">
+          <span class="tag tag-red">4 pasos</span>
+          <span class="tag tag-red">Dark patterns</span>
+          <span class="tag tag-gray">Retención agresiva</span>
+          <span class="tag tag-gray">Doble negativo</span>
+        </div>
+        <div class="card-action">
+          Explorar interfaz
+          <span class="arrow-r">→</span>
+        </div>
+      </div>
+    </a>
+
+    <!-- CARD: FÁCIL -->
+    <a class="card" href="cancelacion-facil.html">
+      <div class="card-thumb card-thumb-easy">
+        <div class="mock-preview easy">
+          <div class="mock-bar sm easy-green" style="border-radius:10px; height:8px;"></div>
+          <div class="mock-bar full easy-dark" style="margin-top:8px;"></div>
+          <div class="mock-bar med easy-dim" style="margin-top:5px;"></div>
+          <div style="background:#0f2a1a; border:1px solid #1a3a25; border-radius:4px; height:22px; margin-top:10px;"></div>
+          <div class="mock-btn easy-cancel"></div>
+          <div class="mock-btn easy-main"></div>
+        </div>
+        <div class="card-badge badge-easy">Diseño ético</div>
+        <div class="card-thumb-overlay"></div>
+      </div>
+      <div class="card-body">
+        <div class="card-number">Caso 02</div>
+        <div class="card-title">Cancelación fácil</div>
+        <div class="card-desc">Flujo de 1 solo paso, sin encuestas obligatorias ni fricciones. El usuario cancela en segundos con información clara, lenguaje honesto y sin presiones emocionales.</div>
+        <div class="card-tags">
+          <span class="tag tag-green">1 paso</span>
+          <span class="tag tag-green">Diseño ético</span>
+          <span class="tag tag-gray">Lenguaje claro</span>
+          <span class="tag tag-gray">Sin presión</span>
+        </div>
+        <div class="card-action">
+          Explorar interfaz
+          <span class="arrow-r">→</span>
+        </div>
+      </div>
+    </a>
+
+  </div>
+
+  <!-- COMPARISON TABLE -->
+  <div class="comparison" id="comparacion">
+    <div class="comparison-header">
+      <div>Característica</div>
+      <div style="color:#f08080;">⚠ Difícil</div>
+      <div style="color:#5dde8a;">✓ Fácil</div>
+    </div>
+    <div class="comparison-row">
+      <div class="feature">Número de pasos</div>
+      <div class="val-hard">4 pasos obligatorios</div>
+      <div class="val-easy">1 pantalla</div>
+    </div>
+    <div class="comparison-row">
+      <div class="feature">Botón de cancelar</div>
+      <div class="val-hard">Texto gris diminuto, oculto</div>
+      <div class="val-easy">Botón visible y claro</div>
+    </div>
+    <div class="comparison-row">
+      <div class="feature">Encuesta</div>
+      <div class="val-hard">Obligatoria (bloquea flujo)</div>
+      <div class="val-easy">Opcional, un clic</div>
+    </div>
+    <div class="comparison-row">
+      <div class="feature">Lenguaje usado</div>
+      <div class="val-hard">Dobles negativos, miedo</div>
+      <div class="val-easy">Directo y positivo</div>
+    </div>
+    <div class="comparison-row">
+      <div class="feature">Pantalla de retención</div>
+      <div class="val-hard">Sí, con urgencia falsa</div>
+      <div class="val-easy">No</div>
+    </div>
+    <div class="comparison-row">
+      <div class="feature">Información sobre acceso</div>
+      <div class="val-hard">Usada para generar miedo</div>
+      <div class="val-easy">Presentada positivamente</div>
+    </div>
+    <div class="comparison-row">
+      <div class="feature">Confirmación final</div>
+      <div class="val-hard">Ambigua (¿confirmas que no…?)</div>
+      <div class="val-easy">Clara y directa</div>
+    </div>
+    <div class="comparison-row">
+      <div class="feature">Tiempo estimado</div>
+      <div class="val-hard">3–6 minutos</div>
+      <div class="val-easy">10–15 segundos</div>
+    </div>
+  </div>
+</section>
+
+<!-- CONCEPTOS -->
+<section class="section" id="conceptos">
+  <div class="section-header">
+    <span class="section-label">Marco teórico</span>
+    <h2 class="section-title">Conceptos clave</h2>
+    <div class="section-divider"></div>
+  </div>
+
+  <div class="concept-strip">
+    <div class="concept-card">
+      <span class="concept-icon">🪤</span>
+      <h4>Dark Patterns</h4>
+      <p>Técnicas de diseño que manipulan al usuario para tomar decisiones que no benefician sus intereses. Incluyen botones ocultos, lenguaje confuso y fricción artificial.</p>
+    </div>
+    <div class="concept-card">
+      <span class="concept-icon">⚖️</span>
+      <h4>Diseño ético</h4>
+      <p>Principio que coloca los intereses del usuario al mismo nivel que los del negocio. Transparencia, claridad y respeto son sus pilares fundamentales.</p>
+    </div>
+    <div class="concept-card">
+      <span class="concept-icon">🧠</span>
+      <h4>Fricción cognitiva</h4>
+      <p>Carga mental generada intencionalmente mediante pasos innecesarios, lenguaje ambiguo o información abrumadora para cansar al usuario y que abandone su intención original.</p>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <p>StreamMax UX Lab &nbsp;·&nbsp; <span>Experimento de diseño de interfaces</span> &nbsp;·&nbsp; Hecho con propósito educativo</p>
+</footer>
+
+<script>
+  const hdr = document.getElementById('hdr');
+  window.addEventListener('scroll', () => {
+    hdr.classList.toggle('scrolled', window.scrollY > 60);
+  });
+</script>
+
+</body>
+</html>
